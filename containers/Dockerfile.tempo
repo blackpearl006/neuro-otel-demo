@@ -1,0 +1,23 @@
+# Tempo - Distributed tracing backend
+# Receives traces via OTLP from OpenTelemetry Collector
+
+FROM grafana/tempo:latest
+
+LABEL author="OpenTelemetry Learning Project"
+LABEL version="1.0.0"
+LABEL description="Tempo distributed tracing backend"
+
+# Ports:
+#   3200: HTTP API for trace queries
+#   4317: OTLP gRPC receiver (receives from collector)
+
+# Config file will be mounted at runtime
+# Default config path: /etc/tempo/config.yaml
+# Data directory: /tmp/tempo
+
+# Health check to verify Tempo is ready
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3200/ready || exit 1
+
+# Default command
+CMD ["-config.file=/etc/tempo/config.yaml"]

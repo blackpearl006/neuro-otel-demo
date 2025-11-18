@@ -1,0 +1,53 @@
+# Grafana Datasources Configuration
+# Auto-provisions Prometheus, Loki, and Tempo datasources with correlation
+
+apiVersion: 1
+
+datasources:
+  # Prometheus - Metrics datasource
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: "15s"
+
+  # Loki - Logs datasource
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false
+    jsonData:
+      # Derived field to link from logs to traces
+      derivedFields:
+        - datasourceUid: tempo
+          matcherRegex: "trace_id=(\\w+)"
+          name: TraceID
+          url: "$${__value.raw}"
+
+  # Tempo - Traces datasource
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    editable: false
+    jsonData:
+      # Enable trace to logs correlation
+      tracesToLogs:
+        datasourceUid: loki
+        filterByTraceID: true
+        filterBySpanID: false
+        tags: ['job', 'instance', 'pod', 'namespace']
+      # Enable trace to metrics correlation
+      tracesToMetrics:
+        datasourceUid: prometheus
+        tags: [{ key: 'service.name', value: 'service' }]
+      # Enable service graph
+      serviceMap:
+        datasourceUid: prometheus
+      # Enable node graph
+      nodeGraph:
+        enabled: true

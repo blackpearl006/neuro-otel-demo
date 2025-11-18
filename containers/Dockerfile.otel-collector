@@ -1,0 +1,23 @@
+# OpenTelemetry Collector - Central telemetry aggregation hub
+# Receives telemetry via OTLP and exports to Prometheus, Loki, and Tempo
+
+FROM otel/opentelemetry-collector-contrib:latest
+
+LABEL author="OpenTelemetry Learning Project"
+LABEL version="1.0.0"
+LABEL description="OpenTelemetry Collector for aggregating traces, metrics, and logs"
+
+# Ports:
+#   4317: OTLP gRPC receiver (applications send telemetry here)
+#   4318: OTLP HTTP receiver (alternative protocol)
+#   8888: Prometheus metrics scrape endpoint (collector self-monitoring)
+
+# Config file will be mounted at runtime
+# Default config path: /etc/otelcol/config.yaml
+
+# Health check to verify collector is running
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:13133/ || exit 1
+
+# Default command (can be overridden)
+CMD ["--config=/etc/otelcol/config.yaml"]

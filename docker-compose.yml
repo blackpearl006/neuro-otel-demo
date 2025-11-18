@@ -1,0 +1,134 @@
+# Docker Compose configuration for OpenTelemetry Observability Stack
+# Version: 1.0.0
+# Purpose: Learning environment for OpenTelemetry with neuroimaging preprocessing
+
+version: '3.8'
+
+networks:
+  otel-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  loki-data:
+  tempo-data:
+  grafana-data:
+
+services:
+  # OpenTelemetry Collector - Central telemetry hub
+  otel-collector:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile.otel-collector
+    container_name: otel-collector
+    hostname: otel-collector
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./configs/otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "8888:8888"   # Prometheus metrics endpoint
+      - "8889:8889"   # Prometheus exporter endpoint
+    networks:
+      - otel-network
+    restart: unless-stopped
+
+  # Prometheus - Metrics storage
+  prometheus:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile.prometheus
+    container_name: prometheus
+    hostname: prometheus
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - otel-network
+    depends_on:
+      - otel-collector
+    restart: unless-stopped
+
+  # Loki - Log aggregation
+  loki:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile.loki
+    container_name: loki
+    hostname: loki
+    volumes:
+      - ./configs/loki-config.yaml:/etc/loki/config.yaml:ro
+      - loki-data:/loki
+    ports:
+      - "3100:3100"
+    networks:
+      - otel-network
+    depends_on:
+      - otel-collector
+    restart: unless-stopped
+
+  # Tempo - Trace storage
+  tempo:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile.tempo
+    container_name: tempo
+    hostname: tempo
+    user: "0:0"  # Run as root to avoid permission issues with volumes
+    volumes:
+      - ./configs/tempo-config.yaml:/etc/tempo/config.yaml:ro
+      - tempo-data:/tmp/tempo
+    ports:
+      - "3200:3200"   # Tempo HTTP API
+      - "4317"        # OTLP gRPC (internal only)
+    networks:
+      - otel-network
+    depends_on:
+      - otel-collector
+    restart: unless-stopped
+
+  # Grafana - Visualization dashboard
+  grafana:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile.grafana
+    container_name: grafana
+    hostname: grafana
+    volumes:
+      - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - ./configs/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - otel-network
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+
+  # Application (placeholder for Phase 3)
+  # Uncomment when application is ready
+  # app:
+  #   build:
+  #     context: ./containers
+  #     dockerfile: Dockerfile.app
+  #   container_name: neuro-preprocess
+  #   hostname: neuro-preprocess
+  #   volumes:
+  #     - ./data/input:/input:ro
+  #     - ./data/output:/output
+  #   networks:
+  #     - otel-network
+  #   depends_on:
+  #     - otel-collector
+  #   environment:
+  #     - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+  #     - OTEL_SERVICE_NAME=neuro-preprocess

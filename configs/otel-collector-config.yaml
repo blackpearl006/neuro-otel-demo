@@ -1,0 +1,67 @@
+# OpenTelemetry Collector Configuration
+# Minimal configuration for learning and testing
+
+receivers:
+  # OTLP receiver for traces, metrics, and logs
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Batch processor to reduce number of outgoing requests
+  batch:
+    timeout: 1s
+    send_batch_size: 100
+
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+
+exporters:
+  # Prometheus exporter - exposes metrics endpoint for Prometheus to scrape
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+
+  # OTLP HTTP exporter for Loki (logs)
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+    tls:
+      insecure: true
+
+  # OTLP exporter for Tempo (traces)
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+  # Debug exporter for troubleshooting (optional, can be removed later)
+  debug:
+    verbosity: normal
+
+service:
+  # Configure pipelines for each telemetry type
+  pipelines:
+    # Trace pipeline: OTLP -> Batch -> Tempo
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/tempo, debug]
+
+    # Metrics pipeline: OTLP -> Batch -> Prometheus
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus, debug]
+
+    # Logs pipeline: OTLP -> Batch -> Loki
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp/loki, debug]
+
+  # Health check extension
+  extensions: []

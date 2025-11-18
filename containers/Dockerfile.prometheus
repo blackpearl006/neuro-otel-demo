@@ -1,0 +1,25 @@
+# Prometheus - Time-series metrics storage and querying
+# Scrapes metrics from OpenTelemetry Collector
+
+FROM prom/prometheus:latest
+
+LABEL author="OpenTelemetry Learning Project"
+LABEL version="1.0.0"
+LABEL description="Prometheus time-series database for metrics storage"
+
+# Ports:
+#   9090: Web UI and PromQL API
+
+# Config file will be mounted at runtime
+# Default config path: /etc/prometheus/prometheus.yml
+# Data directory: /prometheus
+
+# Health check to verify Prometheus is ready
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1
+
+# Default command with standard paths
+CMD ["--config.file=/etc/prometheus/prometheus.yml", \
+     "--storage.tsdb.path=/prometheus", \
+     "--web.console.libraries=/usr/share/prometheus/console_libraries", \
+     "--web.console.templates=/usr/share/prometheus/consoles"]

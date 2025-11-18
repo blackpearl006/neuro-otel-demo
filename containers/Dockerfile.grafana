@@ -1,0 +1,29 @@
+# Grafana - Unified observability dashboard
+# Connects to Prometheus, Loki, and Tempo for visualization
+
+FROM grafana/grafana:latest
+
+LABEL author="OpenTelemetry Learning Project"
+LABEL version="1.0.0"
+LABEL description="Grafana visualization and dashboarding platform"
+
+# Ports:
+#   3000: Web UI
+
+# Datasources and dashboards will be provisioned via mounted configs
+# Config directory: /etc/grafana/provisioning/
+# Data directory: /var/lib/grafana
+
+# Disable analytics for privacy
+ENV GF_ANALYTICS_REPORTING_ENABLED=false
+ENV GF_ANALYTICS_CHECK_FOR_UPDATES=false
+
+# Allow anonymous access for local development (optional, uncomment if needed)
+# ENV GF_AUTH_ANONYMOUS_ENABLED=true
+# ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+
+# Health check to verify Grafana is ready
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+
+# Default Grafana command (from base image)
