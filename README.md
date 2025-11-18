@@ -6,13 +6,6 @@ A comprehensive learning environment for OpenTelemetry with a dummy neuroimaging
 
 **Goal**: Master OpenTelemetry instrumentation patterns and understand how traces, metrics, and logs correlate in a distributed system.
 
-**Status**: Phase 1-2 Complete (Infrastructure Ready)
-- ✅ Directory structure created
-- ✅ Docker containers defined
-- ✅ Minimal configurations written
-- ✅ Orchestration with docker-compose
-- ⏳ Application instrumentation (Phase 3-5)
-
 ## Architecture
 
 ```
@@ -48,8 +41,6 @@ A comprehensive learning environment for OpenTelemetry with a dummy neuroimaging
 ### Prerequisites
 
 - Docker (Docker Desktop for Mac)
-- docker-compose (comes with Docker Desktop)
-- 4GB+ RAM available for containers
 
 ### 1. Build All Containers
 
@@ -230,26 +221,6 @@ curl http://localhost:3100/ready
 curl http://localhost:3200/ready
 ```
 
-## Next Steps (Phases 3-5)
-
-The infrastructure is now ready! Next phases involve:
-
-1. **Phase 3**: Build the preprocessing application
-   - Implement dummy neuroimaging pipeline stages
-   - Create Python module structure
-
-2. **Phase 4**: Add OpenTelemetry instrumentation
-   - Instrument with tracing (spans)
-   - Add metrics collection (counters, histograms)
-   - Configure structured logging with trace correlation
-
-3. **Phase 5**: Test and visualize
-   - Run demo scenarios (normal, failures, slow, concurrent)
-   - Create Grafana dashboards
-   - Verify trace-to-logs correlation
-
-See `plan.md` for detailed implementation steps.
-
 ## Troubleshooting
 
 ### Containers won't start
@@ -316,24 +287,6 @@ This project currently uses Docker for macOS compatibility. To convert to Apptai
 
 4. **Networking**: Apptainer shares host network by default (similar to Docker host mode)
 
-See `plan.md` Phase 2 section for detailed Apptainer .def examples.
-
-## Learning Objectives
-
-After completing this project, you will understand:
-
-- ✅ How to set up an observability stack with Docker
-- ✅ OpenTelemetry Collector configuration (receivers, processors, exporters)
-- ✅ Prometheus scraping and time-series storage
-- ✅ Loki log aggregation and label-based querying
-- ✅ Tempo trace storage and distributed tracing concepts
-- ✅ Grafana datasource configuration and correlation
-- ⏳ Python application instrumentation with OpenTelemetry SDK
-- ⏳ Creating custom spans, metrics, and structured logs
-- ⏳ Trace-to-logs correlation patterns
-- ⏳ Building observability dashboards in Grafana
-- ⏳ Apptainer containerization for HPC environments
-- ⏳ Integration with nipoppy neuroimaging workflows
 
 ## Resources
 
@@ -343,11 +296,3 @@ After completing this project, you will understand:
 - [Grafana Tempo Documentation](https://grafana.com/docs/tempo/)
 - [Grafana Documentation](https://grafana.com/docs/grafana/latest/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
-
-## License
-
-This is a learning project. Feel free to use and modify for educational purposes.
-
-## Author
-
-OpenTelemetry Learning Project
