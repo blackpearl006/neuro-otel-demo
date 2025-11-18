@@ -1,0 +1,16 @@
+# Core dependencies for Phase 3
+numpy>=1.24.0
+click>=8.1.0
+tqdm>=4.65.0
+
+# Phase 4: OpenTelemetry instrumentation (uncomment when ready)
+# opentelemetry-api>=1.20.0
+# opentelemetry-sdk>=1.20.0
+# opentelemetry-exporter-otlp>=1.20.0
+# opentelemetry-instrumentation>=0.41b0
+
+# Development dependencies (optional)
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+# black>=23.0.0
+# ruff>=0.1.0

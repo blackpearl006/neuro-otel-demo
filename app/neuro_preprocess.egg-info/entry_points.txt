@@ -1,0 +1,2 @@
+[console_scripts]
+neuro-preprocess = neuro_preprocess.cli:main

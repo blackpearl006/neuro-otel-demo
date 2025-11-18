@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: neuro-preprocess
+Version: 0.1.0
+Summary: Neuroimaging preprocessing pipeline with OpenTelemetry instrumentation
+Author: OpenTelemetry Learning Project
+Keywords: neuroimaging,preprocessing,opentelemetry,observability
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.10
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: click>=8.1.0
+Requires-Dist: tqdm>=4.65.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Provides-Extra: otel
+Requires-Dist: opentelemetry-api>=1.20.0; extra == "otel"
+Requires-Dist: opentelemetry-sdk>=1.20.0; extra == "otel"
+Requires-Dist: opentelemetry-exporter-otlp>=1.20.0; extra == "otel"
+Requires-Dist: opentelemetry-instrumentation>=0.41b0; extra == "otel"
