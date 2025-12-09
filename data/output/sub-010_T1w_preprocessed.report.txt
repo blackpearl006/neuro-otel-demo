@@ -2,7 +2,7 @@
 NEUROIMAGING PROCESSING REPORT
 ============================================================
 
-Generated: 2025-11-18 22:45:42
+Generated: 2025-11-24 19:24:41
 
 INPUT DATA:
   Shape: (128, 128, 100)
@@ -10,15 +10,15 @@ INPUT DATA:
 
 PROCESSING STEPS:
   1. Skull Strip
-     Time: 0.693s
+     Time: 0.707s
      Method: simulated_BET
   2. Bias Correction
-     Time: 0.473s
+     Time: 0.470s
      Method: simulated_N4
   3. Normalization
-     Time: 0.127s
+     Time: 0.119s
      Method: z-score + rescale
 
-Total processing time: 1.293s
+Total processing time: 1.296s
 
 ============================================================

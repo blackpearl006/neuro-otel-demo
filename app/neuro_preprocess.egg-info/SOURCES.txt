@@ -17,4 +17,7 @@ neuro_preprocess/telemetry/logger_setup.py
 neuro_preprocess/telemetry/metrics_setup.py
 neuro_preprocess/telemetry/tracer_setup.py
 neuro_preprocess/tests/__init__.py
+neuro_preprocess/tests/test_integration.py
 neuro_preprocess/tests/test_loader.py
+neuro_preprocess/tests/test_processor.py
+neuro_preprocess/tests/test_writer.py

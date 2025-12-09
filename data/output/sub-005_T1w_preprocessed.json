@@ -4,8 +4,8 @@
     "format": ".gz",
     "modality": "T1-weighted MRI",
     "dimensions": "3D",
-    "patient_id": "SUB-6826",
-    "session": "ses-1",
+    "patient_id": "SUB-9224",
+    "session": "ses-2",
     "acquisition_date": "2024-01-15"
   },
   "processing_statistics": {
@@ -20,40 +20,40 @@
       "bias_correction",
       "normalization"
     ],
-    "total_processing_time": 1.277860403060913,
+    "total_processing_time": 1.2628540992736816,
     "skull_strip": {
       "method": "simulated_BET",
       "voxels_removed": 1202971,
       "voxels_retained": 435429,
       "removal_percentage": 73.42352294921875,
-      "processing_time": 0.6911261081695557
+      "processing_time": 0.6868960857391357
     },
     "bias_correction": {
       "method": "simulated_N4",
       "mean_bias_field": 1.1263227462768555,
       "max_bias_field": 1.3499846458435059,
-      "iterations": 4,
-      "processing_time": 0.46984338760375977
+      "iterations": 7,
+      "processing_time": 0.46140289306640625
     },
     "normalization": {
       "method": "z-score + rescale",
-      "original_mean": -0.0029242264572530985,
-      "original_std": 44.42298889160156,
+      "original_mean": 0.08604149520397186,
+      "original_std": 44.406829833984375,
       "original_range": [
-        -424.0080871582031,
-        438.7886047363281
+        -428.7012023925781,
+        412.065673828125
       ],
-      "normalized_mean": 49.14311218261719,
-      "normalized_std": 5.1487202644348145,
+      "normalized_mean": 50.999542236328125,
+      "normalized_std": 5.281704902648926,
       "normalized_range": [
         0.0,
         100.0
       ],
-      "processing_time": 0.11689090728759766
+      "processing_time": 0.11455512046813965
     }
   },
   "output_metadata": {
     "format": "nifti",
-    "generated_timestamp": "2025-11-18 22:45:33"
+    "generated_timestamp": "2025-11-24 19:24:30"
   }
 }

@@ -13,10 +13,12 @@ from opentelemetry import trace
 from neuro_preprocess.stages.loader import DataLoader
 from neuro_preprocess.stages.processor import ImageProcessor
 from neuro_preprocess.stages.writer import DataWriter
+from neuro_preprocess.telemetry.metrics_setup import create_pipeline_metrics, get_meter
 
 # Get tracer
 tracer = trace.get_tracer(__name__)
 logger = logging.getLogger(__name__)
+meter = get_meter(__name__)
 
 
 class PreprocessingPipeline:
@@ -73,6 +75,9 @@ class PreprocessingPipeline:
             "errors": [],
         }
 
+        # Initialize metrics
+        self.metrics = create_pipeline_metrics(meter)
+
     def process_file(self, input_path: str, output_filename: Optional[str] = None) -> Dict[str, Any]:
         """
         Process a single neuroimaging file
@@ -109,6 +114,8 @@ class PreprocessingPipeline:
                     "duration": loaded_data["load_time_seconds"],
                     "file_size_mb": loaded_data["file_size_mb"],
                 }
+                self.metrics["load_duration"].record(loaded_data["load_time_seconds"])
+                self.metrics["file_size"].record(loaded_data["file_size_mb"])
 
                 # Stage 2: Process data
                 print(f"  [2/3] Processing...")
@@ -117,6 +124,11 @@ class PreprocessingPipeline:
                     "duration": processed_data["processing_stats"]["total_processing_time"],
                     "steps": processed_data["processing_stats"]["steps_completed"],
                 }
+                self.metrics["process_duration"].record(processed_data["processing_stats"]["total_processing_time"])
+                # Assuming voxels processed is available in processed_data, otherwise we might need to calculate it
+                # For now, let's try to get it from the data shape if possible, or skip if not easily available
+                if "data" in processed_data:
+                     self.metrics["voxels_processed"].record(processed_data["data"].size)
 
                 # Stage 3: Write output
                 print(f"  [3/3] Writing output...")
@@ -139,6 +151,15 @@ class PreprocessingPipeline:
                     "output_file": write_stats["output_file"],
                     "file_size_kb": write_stats["file_size_kb"],
                 }
+                self.metrics["write_duration"].record(write_stats["write_time_seconds"])
+                
+                # Calculate compression ratio if possible (output size / input size)
+                # Input size is in MB, output in KB. 
+                # input_mb = loaded_data["file_size_mb"]
+                # output_mb = write_stats["file_size_kb"] / 1024
+                # if input_mb > 0:
+                #     ratio = output_mb / input_mb
+                #     self.metrics["compression_ratio"].record(ratio)
 
                 # Calculate total time
                 total_time = time.time() - start_time
@@ -153,6 +174,10 @@ class PreprocessingPipeline:
                 # Update global statistics
                 self.stats["files_processed"] += 1
                 self.stats["total_processing_time"] += total_time
+
+                # Record success metrics
+                self.metrics["files_processed"].add(1)
+                self.metrics["total_duration"].record(total_time)
 
                 print(f"  ✓ Complete in {total_time:.2f}s\n")
                 logger.info(f"Pipeline completed successfully for {filename} in {total_time:.2f}s")
@@ -179,6 +204,10 @@ class PreprocessingPipeline:
                     "file": input_path,
                     "error": str(e),
                 })
+
+                # Record failure metrics
+                self.metrics["files_failed"].add(1)
+                self.metrics["processing_errors"].add(1)
 
                 print(f"  ✗ Failed: {e}\n")
                 logger.error(f"Pipeline failed for {filename}: {e}")

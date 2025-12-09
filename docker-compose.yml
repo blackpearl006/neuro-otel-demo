@@ -59,6 +59,7 @@ services:
       dockerfile: Dockerfile.loki
     container_name: loki
     hostname: loki
+    user: "0:0"  # Run as root to avoid permission issues with volumes
     volumes:
       - ./configs/loki-config.yaml:/etc/loki/config.yaml:ro
       - loki-data:/loki
@@ -116,19 +117,19 @@ services:
 
   # Application (placeholder for Phase 3)
   # Uncomment when application is ready
-  # app:
-  #   build:
-  #     context: ./containers
-  #     dockerfile: Dockerfile.app
-  #   container_name: neuro-preprocess
-  #   hostname: neuro-preprocess
-  #   volumes:
-  #     - ./data/input:/input:ro
-  #     - ./data/output:/output
-  #   networks:
-  #     - otel-network
-  #   depends_on:
-  #     - otel-collector
-  #   environment:
-  #     - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-  #     - OTEL_SERVICE_NAME=neuro-preprocess
+  app:
+    build:
+      context: ./containers
+      dockerfile: Dockerfile.app
+    container_name: neuro-preprocess
+    hostname: neuro-preprocess
+    volumes:
+      - ./data/input:/input:ro
+      - ./data/output:/output
+    networks:
+      - otel-network
+    depends_on:
+      - otel-collector
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=neuro-preprocess

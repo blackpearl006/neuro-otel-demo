@@ -1,10 +1,21 @@
 # OpenTelemetry Observability Learning Project
+### Neuroimaging Preprocessing with Full Stack Observability
 
-A comprehensive learning environment for OpenTelemetry with a dummy neuroimaging preprocessing pipeline. This project demonstrates distributed tracing, metrics collection, and log aggregation using industry-standard observability tools.
+A complete learning environment for understanding **OpenTelemetry**, **distributed tracing**, **metrics**, and **logging** using a simulated neuroimaging preprocessing pipeline.
 
-## Project Overview
+---
 
-**Goal**: Master OpenTelemetry instrumentation patterns and understand how traces, metrics, and logs correlate in a distributed system.
+## 🎯 What Is This?
+
+This project demonstrates **production-grade observability** for a Python application using:
+
+- **OpenTelemetry** - Industry standard for instrumentation
+- **Grafana** - Unified visualization dashboard
+- **Prometheus** - Metrics storage and querying
+- **Loki** - Log aggregation and search
+- **Tempo** - Distributed tracing backend
+
+**The Application**: A simulated brain scan preprocessing pipeline (load → process → write) that generates rich telemetry data for learning purposes.
 
 ## Architecture
 
@@ -36,67 +47,47 @@ A comprehensive learning environment for OpenTelemetry with a dummy neuroimaging
         └───────────────────────┘
 ```
 
-## Quick Start
+## 🚀 Quick Start (5 Minutes)
 
-### Prerequisites
+### 1. Prerequisites
 
-- Docker (Docker Desktop for Mac)
+- **Docker Desktop** (macOS/Windows) or Docker + Docker Compose (Linux)
+- **Python 3.10+**
+- **Git**
 
-### 1. Build All Containers
-
-```bash
-cd containers
-./build_all.sh
-```
-
-This builds 5 containers:
-- `otel-collector` - Central telemetry hub
-- `prometheus` - Metrics storage
-- `loki` - Log aggregation
-- `tempo` - Trace storage
-- `grafana` - Visualization dashboard
-
-### 2. Start the Observability Stack
+### 2. Clone and Setup
 
 ```bash
-# From project root
+# Clone the repository
+git clone <your-repo-url>
+cd neuro-otel-demo
+
+# Install the Python application
+cd app/
+pip install -e .
+cd ..
+
+# Start the observability stack
 docker-compose up -d
+
+# Wait ~30 seconds for all services to be healthy
 ```
 
-### 3. Verify Services
-
-Check that all containers are running:
+### 3. Run Your First Demo
 
 ```bash
-docker-compose ps
+# Generate sample data and process it
+./scripts/run_demo.sh normal
 ```
 
-You should see 5 services in "Up" state.
+### 4. View Telemetry in Grafana
 
-### 4. Access the Dashboards
+Open **http://localhost:3000** (login: `admin` / `admin`)
 
-- **Grafana**: http://localhost:3000 (login: admin/admin)
-- **Prometheus**: http://localhost:9090
-- **OTel Collector Metrics**: http://localhost:8888/metrics
-
-### 5. View Logs
-
-```bash
-# All services
-docker-compose logs -f
-
-# Specific service
-docker-compose logs -f grafana
-```
-
-### 6. Stop the Stack
-
-```bash
-docker-compose down
-
-# To also remove volumes (delete all data)
-docker-compose down -v
-```
+- **Pre-built Dashboard**: http://localhost:3000/d/neuroimaging-pipeline
+- **Explore Traces**: Explore → Tempo → Search for "neuro-preprocess"
+- **Explore Logs**: Explore → Loki → Query: `{service_name="neuro-preprocess"}`
+- **Explore Metrics**: Explore → Prometheus → Try: `neuro_files_processed_total`
 
 ## Directory Structure
 

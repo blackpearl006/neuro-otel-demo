@@ -2,7 +2,7 @@
 NEUROIMAGING PROCESSING REPORT
 ============================================================
 
-Generated: 2025-11-18 22:45:47
+Generated: 2025-11-24 19:24:28
 
 INPUT DATA:
   Shape: (128, 128, 100)
@@ -13,12 +13,12 @@ PROCESSING STEPS:
      Time: 0.685s
      Method: simulated_BET
   2. Bias Correction
-     Time: 0.454s
+     Time: 0.461s
      Method: simulated_N4
   3. Normalization
-     Time: 0.118s
+     Time: 0.116s
      Method: z-score + rescale
 
-Total processing time: 1.256s
+Total processing time: 1.263s
 
 ============================================================

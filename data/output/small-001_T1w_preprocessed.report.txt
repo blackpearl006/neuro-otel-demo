@@ -1,0 +1,24 @@
+============================================================
+NEUROIMAGING PROCESSING REPORT
+============================================================
+
+Generated: 2025-11-24 19:10:03
+
+INPUT DATA:
+  Shape: (128, 128, 100)
+  Data type: float32
+
+PROCESSING STEPS:
+  1. Skull Strip
+     Time: 0.690s
+     Method: simulated_BET
+  2. Bias Correction
+     Time: 0.483s
+     Method: simulated_N4
+  3. Normalization
+     Time: 0.128s
+     Method: z-score + rescale
+
+Total processing time: 1.302s
+
+============================================================

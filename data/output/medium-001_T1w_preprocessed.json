@@ -1,0 +1,59 @@
+{
+  "original_metadata": {
+    "filename": "medium-001_T1w.nii.gz",
+    "format": ".gz",
+    "modality": "T1-weighted MRI",
+    "dimensions": "3D",
+    "patient_id": "SUB-7146",
+    "session": "ses-4",
+    "acquisition_date": "2024-01-15"
+  },
+  "processing_statistics": {
+    "input_shape": [
+      128,
+      128,
+      100
+    ],
+    "input_dtype": "float32",
+    "steps_completed": [
+      "skull_strip",
+      "bias_correction",
+      "normalization"
+    ],
+    "total_processing_time": 1.2779390811920166,
+    "skull_strip": {
+      "method": "simulated_BET",
+      "voxels_removed": 1202971,
+      "voxels_retained": 435429,
+      "removal_percentage": 73.42352294921875,
+      "processing_time": 0.6888570785522461
+    },
+    "bias_correction": {
+      "method": "simulated_N4",
+      "mean_bias_field": 1.1263227462768555,
+      "max_bias_field": 1.3499846458435059,
+      "iterations": 7,
+      "processing_time": 0.4653189182281494
+    },
+    "normalization": {
+      "method": "z-score + rescale",
+      "original_mean": 0.03307775408029556,
+      "original_std": 44.50324630737305,
+      "original_range": [
+        -453.577392578125,
+        456.1045837402344
+      ],
+      "normalized_mean": 49.86472702026367,
+      "normalized_std": 4.892176628112793,
+      "normalized_range": [
+        0.0,
+        100.0
+      ],
+      "processing_time": 0.1237630844116211
+    }
+  },
+  "output_metadata": {
+    "format": "nifti",
+    "generated_timestamp": "2025-11-24 19:09:42"
+  }
+}
