@@ -14,9 +14,12 @@ LABEL description="Loki log aggregation system"
 # Default config path: /etc/loki/config.yaml
 # Data directory: /loki
 
+# Copy wget from busybox to enable health checks
+COPY --from=busybox:1.36.1-uclibc /bin/wget /bin/wget
+
 # Health check to verify Loki is ready
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1
+  CMD ["/bin/wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/ready"]
 
 # Default command
 CMD ["-config.file=/etc/loki/config.yaml"]

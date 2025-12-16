@@ -43,6 +43,7 @@ exporters:
     verbosity: normal
 
 service:
+  extensions: [health_check]
   # Configure pipelines for each telemetry type
   pipelines:
     # Trace pipeline: OTLP -> Batch -> Tempo
@@ -64,4 +65,7 @@ service:
       exporters: [otlphttp/loki, debug]
 
   # Health check extension
-  extensions: []
+# Extensions definition must be top-level
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133

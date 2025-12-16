@@ -44,6 +44,12 @@ def setup_tracing(
     provider = TracerProvider(resource=resource)
 
     # Configure OTLP exporter
+    # Remove http:// or https:// for gRPC exporter
+    if otlp_endpoint.startswith("http://"):
+        otlp_endpoint = otlp_endpoint.replace("http://", "")
+    elif otlp_endpoint.startswith("https://"):
+        otlp_endpoint = otlp_endpoint.replace("https://", "")
+
     otlp_exporter = OTLPSpanExporter(
         endpoint=otlp_endpoint,
         insecure=True,  # For local development (use TLS in production)

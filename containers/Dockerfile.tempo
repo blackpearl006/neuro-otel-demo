@@ -15,9 +15,12 @@ LABEL description="Tempo distributed tracing backend"
 # Default config path: /etc/tempo/config.yaml
 # Data directory: /tmp/tempo
 
+# Copy wget from busybox to enable health checks
+COPY --from=busybox:1.36.1-uclibc /bin/wget /bin/wget
+
 # Health check to verify Tempo is ready
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3200/ready || exit 1
+  CMD ["/bin/wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3200/ready"]
 
 # Default command
 CMD ["-config.file=/etc/tempo/config.yaml"]

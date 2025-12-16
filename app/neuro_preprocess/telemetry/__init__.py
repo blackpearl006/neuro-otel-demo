@@ -9,7 +9,7 @@ from neuro_preprocess.telemetry.metrics_setup import (
     get_meter,
     create_pipeline_metrics,
 )
-from neuro_preprocess.telemetry.logger_setup import setup_logging, get_logger, log_with_trace
+from neuro_preprocess.telemetry.logger_setup import setup_logging, get_logger, log_with_trace, get_logger_provider, cleanup_logging
 
 __all__ = [
     "setup_tracing",
@@ -20,4 +20,6 @@ __all__ = [
     "setup_logging",
     "get_logger",
     "log_with_trace",
+    "get_logger_provider",
+    "cleanup_logging",
 ]

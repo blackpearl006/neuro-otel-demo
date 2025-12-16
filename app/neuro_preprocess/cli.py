@@ -9,7 +9,10 @@ from typing import List
 import click
 
 from neuro_preprocess.pipeline import PreprocessingPipeline
-from neuro_preprocess.telemetry import setup_tracing, setup_metrics, setup_logging
+from neuro_preprocess.telemetry import setup_tracing, setup_metrics, setup_logging, get_logger_provider, cleanup_logging
+from opentelemetry import trace, metrics, _logs
+
+
 
 
 def initialize_telemetry():
@@ -21,7 +24,7 @@ def initialize_telemetry():
 
     try:
         # Get OTLP endpoint from environment
-        otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4317")
+        otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "localhost:4317")
 
         # Initialize telemetry
         setup_tracing(otlp_endpoint=otlp_endpoint)
@@ -32,6 +35,28 @@ def initialize_telemetry():
     except Exception as e:
         click.echo(click.style(f"⚠ Warning: Could not initialize OpenTelemetry: {e}", fg="yellow"))
         click.echo("  Continuing without telemetry...\n")
+
+def cleanup_telemetry():
+    """Flush and shutdown telemetry providers"""
+    try:
+        # FORCE FLUSH first to send pending data
+        # Shutdown Tracer
+        if trace.get_tracer_provider():
+            trace.get_tracer_provider().force_flush()
+            trace.get_tracer_provider().shutdown()
+            
+        # Shutdown Metrics
+        if metrics.get_meter_provider():
+            metrics.get_meter_provider().force_flush()
+            metrics.get_meter_provider().shutdown()
+            
+        # Shutdown Logs
+        cleanup_logging()
+        
+    except Exception as e:
+        # Don't fail application if telemetry shutdown fails
+        # print(f"Error shutting down telemetry: {e}") 
+        pass
 
 
 @click.group()
@@ -145,6 +170,8 @@ def process(
     except Exception as e:
         click.echo(click.style(f"✗ Processing failed: {e}", fg="red", bold=True), err=True)
         return 1
+    finally:
+        cleanup_telemetry()
 
 
 @cli.command()
@@ -245,6 +272,8 @@ def batch(
     except Exception as e:
         click.echo(click.style(f"✗ Batch processing failed: {e}", fg="red", bold=True), err=True)
         return 1
+    finally:
+        cleanup_telemetry()
 
 
 @cli.command()
